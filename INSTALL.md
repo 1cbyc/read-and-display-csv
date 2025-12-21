@@ -16,41 +16,41 @@
 ### Option 1: PHP Built-in Server (Easiest)
 
 1. **Navigate to project directory:**
-   ```bash
-   cd path/to/read-and-display-csv
-   ```
+    ```bash
+    cd path/to/read-and-display-csv
+    ```
 
 2. **Start PHP server:**
-   ```bash
-   php -S localhost:8000
-   ```
+    ```bash
+    php -S localhost:8000
+    ```
 
 3. **Open in browser:**
-   ```
-   http://localhost:8000
-   ```
+    ```
+    http://localhost:8000
+    ```
 
 ### Option 2: Apache/Nginx
 
 1. **Copy files to web server directory:**
-   ```bash
-   # For Apache (typical location)
-   cp -r . /var/www/html/csv-reader/
-   
-   # For Windows XAMPP
-   copy * C:\xampp\htdocs\csv-reader\
-   ```
+    ```bash
+    # For Apache (typical location)
+    cp -r . /var/www/html/csv-reader/
+    
+    # For Windows XAMPP
+    copy * C:\xampp\htdocs\csv-reader\
+    ```
 
 2. **Set proper permissions:**
-   ```bash
-   chmod 755 index.html read.php
-   chmod 644 data.csv
-   ```
+    ```bash
+    chmod 755 index.html read.php
+    chmod 644 data.csv
+    ```
 
 3. **Access via browser:**
-   ```
-   http://localhost/csv-reader/
-   ```
+    ```
+    http://localhost/csv-reader/
+    ```
 
 ### Option 3: Windows IIS
 
@@ -67,19 +67,19 @@ To use your own CSV file:
 
 1. Replace `data.csv` with your file, or
 2. Edit `config.php` and change `csv_filename` setting:
-   ```php
-   'csv_filename' => 'your-file.csv',
-   ```
+    ```php
+    'csv_filename' => 'your-file.csv',
+    ```
 
 ### Enable CORS (Cross-Origin Requests)
 
 If accessing from different domain:
 
 1. Edit `config.php`:
-   ```php
-   'enable_cors' => true,
-   'allowed_origins' => ['https://yourdomain.com'],
-   ```
+    ```php
+    'enable_cors' => true,
+    'allowed_origins' => ['https://yourdomain.com'],
+    ```
 
 2. Or manually edit `read.php` and uncomment CORS headers
 
@@ -133,18 +133,18 @@ To switch between them, rename or edit `config.php`.
 
 ## Features Overview
 
-### Current Features ✅
-- ✅ Read CSV files via PHP backend
-- ✅ Display data in responsive HTML table
-- ✅ Real-time search/filter across all columns
-- ✅ Click-to-sort on any column (ascending/descending)
-- ✅ Export filtered/sorted data to CSV
-- ✅ Row statistics (columns, rows, cells)
-- ✅ Mobile-responsive design
-- ✅ Error handling with user feedback
-- ✅ Clean, modern UI with gradients
+### Current Features
+- Read CSV files via PHP backend
+- Display data in responsive HTML table
+- Real-time search/filter across all columns
+- Click-to-sort on any column (ascending/descending)
+- Export filtered/sorted data to CSV
+- Row statistics (columns, rows, cells)
+- Mobile-responsive design
+- Error handling with user feedback
+- Clean, modern UI with gradients
 
-### Future Features 🚀
+### Future Features
 - CSV file upload from browser
 - Inline editing of cells
 - Add/delete rows
@@ -159,20 +159,20 @@ To switch between them, rename or edit `config.php`.
 ### For Large CSV Files
 
 1. **Enable caching** in `config.php`:
-   ```php
-   'cache_enabled' => true,
-   ```
+    ```php
+    'cache_enabled' => true,
+    ```
 
 2. **Set row limit** to prevent memory issues:
-   ```php
-   'max_rows' => 5000,
-   ```
+    ```php
+    'max_rows' => 5000,
+    ```
 
 3. Consider implementing pagination (future feature)
 
 ## Security Notes
 
-⚠️ **Important for Production:**
+**Important for Production:**
 
 1. **Validate uploaded files** (when upload feature is added)
 2. **Sanitize file paths** to prevent directory traversal
@@ -194,4 +194,5 @@ This project is open source under the MIT License. See LICENSE file.
 
 ---
 
-**Enjoy using CSV Reader & Display! 📊**
+**Enjoy using CSV Reader & Display!**
+
