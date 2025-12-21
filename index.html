@@ -49,6 +49,35 @@
             padding: 20px 30px;
             background: #f8f9fa;
             border-bottom: 2px solid #e9ecef;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .search-container {
+            flex: 1;
+            min-width: 250px;
+        }
+
+        .search-container input {
+            width: 100%;
+            padding: 12px 20px;
+            border: 2px solid #e9ecef;
+            border-radius: 5px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        .search-container input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
         }
 
         button {
@@ -69,6 +98,19 @@
 
         button:active {
             transform: translateY(0);
+        }
+
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        button.secondary {
+            background: #6c757d;
+        }
+
+        button.success {
+            background: linear-gradient(135deg, #56ab2f 0%, #a8e063 100%);
         }
 
         .loading {
@@ -110,6 +152,28 @@
             text-transform: uppercase;
             font-size: 0.9em;
             letter-spacing: 0.5px;
+            cursor: pointer;
+            user-select: none;
+            position: relative;
+        }
+
+        th:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        th.sortable::after {
+            content: ' ⇅';
+            opacity: 0.5;
+        }
+
+        th.sort-asc::after {
+            content: ' ↑';
+            opacity: 1;
+        }
+
+        th.sort-desc::after {
+            content: ' ↓';
+            opacity: 1;
         }
 
         td {
@@ -184,8 +248,14 @@
         </header>
 
         <div class="controls">
-            <button id="loadBtn" onclick="loadData()">Load CSV Data</button>
-            <button onclick="location.reload()" style="margin-left: 10px; background: #6c757d;">Refresh Page</button>
+            <div class="search-container">
+                <input type="text" id="searchInput" placeholder="🔍 Search table data..." oninput="filterTable()">
+            </div>
+            <div class="button-group">
+                <button id="loadBtn" onclick="loadData()">Load CSV Data</button>
+                <button class="success" id="exportBtn" onclick="exportToCSV()" style="display:none;">Export to CSV</button>
+                <button class="secondary" onclick="location.reload()">Refresh Page</button>
+            </div>
         </div>
 
         <div id="content">
@@ -196,6 +266,15 @@
     </div>
 
     <script>
+        // Global variables to store data
+        let globalData = [];
+        let currentSortColumn = -1;
+        let currentSortOrder = 'asc';
+
+        /**
+         * Load CSV data from the PHP backend
+         * Fetches data via AJAX and displays it in the table
+         */
         function loadData() {
             const contentDiv = document.getElementById('content');
             const loadBtn = document.getElementById('loadBtn');
@@ -213,8 +292,12 @@
                     return response.json();
                 })
                 .then(data => {
+                    // Store data globally for sorting/filtering
+                    globalData = data;
                     displayData(data);
                     loadBtn.disabled = false;
+                    // Show export button once data is loaded
+                    document.getElementById('exportBtn').style.display = 'inline-block';
                 })
                 .catch(error => {
                     contentDiv.innerHTML = `<div class="error">Error loading data: ${error.message}</div>`;
@@ -222,6 +305,10 @@
                 });
         }
 
+        /**
+         * Display CSV data in an HTML table
+         * @param {Array} data - 2D array of CSV data (first row is headers)
+         */
         function displayData(data) {
             const contentDiv = document.getElementById('content');
             
@@ -234,15 +321,16 @@
             const headers = data[0];
             const rows = data.slice(1);
 
-            // Build table
-            let tableHTML = '<div class="table-container"><table><thead><tr>';
+            // Build table with sortable headers
+            let tableHTML = '<div class="table-container"><table id="dataTable"><thead><tr>';
             
-            headers.forEach(header => {
-                tableHTML += `<th>${header}</th>`;
+            headers.forEach((header, index) => {
+                tableHTML += `<th class="sortable" onclick="sortTable(${index})">${header}</th>`;
             });
             
             tableHTML += '</tr></thead><tbody>';
             
+            // Build table rows
             rows.forEach(row => {
                 tableHTML += '<tr>';
                 row.forEach(cell => {
@@ -261,7 +349,7 @@
                         <div class="stat-label">Columns</div>
                     </div>
                     <div class="stat-item">
-                        <div class="stat-value">${rows.length}</div>
+                        <div class="stat-value" id="rowCount">${rows.length}</div>
                         <div class="stat-label">Rows</div>
                     </div>
                     <div class="stat-item">
@@ -272,6 +360,181 @@
             `;
 
             contentDiv.innerHTML = tableHTML;
+        }
+
+        /**
+         * Sort table by column
+         * @param {number} columnIndex - Index of the column to sort by
+         */
+        function sortTable(columnIndex) {
+            if (globalData.length === 0) return;
+
+            const headers = globalData[0];
+            let rows = globalData.slice(1);
+
+            // Toggle sort order if clicking the same column
+            if (currentSortColumn === columnIndex) {
+                currentSortOrder = currentSortOrder === 'asc' ? 'desc' : 'asc';
+            } else {
+                currentSortOrder = 'asc';
+                currentSortColumn = columnIndex;
+            }
+
+            // Sort rows
+            rows.sort((a, b) => {
+                let aVal = a[columnIndex];
+                let bVal = b[columnIndex];
+
+                // Try to convert to numbers for numeric sorting
+                const aNum = parseFloat(aVal);
+                const bNum = parseFloat(bVal);
+
+                if (!isNaN(aNum) && !isNaN(bNum)) {
+                    return currentSortOrder === 'asc' ? aNum - bNum : bNum - aNum;
+                }
+
+                // String comparison
+                aVal = String(aVal).toLowerCase();
+                bVal = String(bVal).toLowerCase();
+
+                if (currentSortOrder === 'asc') {
+                    return aVal.localeCompare(bVal);
+                } else {
+                    return bVal.localeCompare(aVal);
+                }
+            });
+
+            // Update global data with sorted rows
+            globalData = [headers, ...rows];
+            displayData(globalData);
+
+            // Update header styling to show sort indicator
+            updateSortIndicators(columnIndex);
+        }
+
+        /**
+         * Update visual indicators on table headers to show sort status
+         * @param {number} sortedColumn - Index of the currently sorted column
+         */
+        function updateSortIndicators(sortedColumn) {
+            const headers = document.querySelectorAll('#dataTable th');
+            headers.forEach((header, index) => {
+                header.classList.remove('sort-asc', 'sort-desc');
+                if (index === sortedColumn) {
+                    header.classList.add(currentSortOrder === 'asc' ? 'sort-asc' : 'sort-desc');
+                }
+            });
+        }
+
+        /**
+         * Filter table rows based on search input
+         * Searches across all columns and hides non-matching rows
+         */
+        function filterTable() {
+            const searchInput = document.getElementById('searchInput');
+            const filter = searchInput.value.toLowerCase();
+            const table = document.getElementById('dataTable');
+            
+            if (!table) return;
+
+            const tbody = table.getElementsByTagName('tbody')[0];
+            const rows = tbody.getElementsByTagName('tr');
+            let visibleCount = 0;
+
+            // Loop through all table rows (except header)
+            for (let i = 0; i < rows.length; i++) {
+                const row = rows[i];
+                const cells = row.getElementsByTagName('td');
+                let found = false;
+
+                // Search in all cells of the row
+                for (let j = 0; j < cells.length; j++) {
+                    const cell = cells[j];
+                    if (cell) {
+                        const textValue = cell.textContent || cell.innerText;
+                        if (textValue.toLowerCase().indexOf(filter) > -1) {
+                            found = true;
+                            break;
+                        }
+                    }
+                }
+
+                // Show or hide row based on search match
+                if (found) {
+                    row.style.display = '';
+                    visibleCount++;
+                } else {
+                    row.style.display = 'none';
+                }
+            }
+
+            // Update row count to show filtered results
+            const rowCountElement = document.getElementById('rowCount');
+            if (rowCountElement) {
+                rowCountElement.textContent = visibleCount;
+            }
+        }
+
+        /**
+         * Export the current table data (including filtered/sorted) to CSV file
+         * Downloads the CSV file to the user's computer
+         */
+        function exportToCSV() {
+            if (globalData.length === 0) {
+                alert('No data to export');
+                return;
+            }
+
+            // Get only visible rows if filtering is active
+            const table = document.getElementById('dataTable');
+            const searchFilter = document.getElementById('searchInput').value;
+            
+            let dataToExport;
+            
+            if (searchFilter && table) {
+                // Export only visible (filtered) rows
+                dataToExport = [globalData[0]]; // Headers
+                const rows = table.getElementsByTagName('tbody')[0].getElementsByTagName('tr');
+                
+                for (let i = 0; i < rows.length; i++) {
+                    if (rows[i].style.display !== 'none') {
+                        const cells = rows[i].getElementsByTagName('td');
+                        const rowData = [];
+                        for (let j = 0; j < cells.length; j++) {
+                            rowData.push(cells[j].textContent);
+                        }
+                        dataToExport.push(rowData);
+                    }
+                }
+            } else {
+                // Export all data
+                dataToExport = globalData;
+            }
+
+            // Convert array to CSV string
+            const csvContent = dataToExport.map(row => {
+                return row.map(cell => {
+                    // Escape quotes and wrap in quotes if contains comma, quote, or newline
+                    const cellStr = String(cell);
+                    if (cellStr.includes(',') || cellStr.includes('"') || cellStr.includes('\n')) {
+                        return '"' + cellStr.replace(/"/g, '""') + '"';
+                    }
+                    return cellStr;
+                }).join(',');
+            }).join('\n');
+
+            // Create download link and trigger download
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            const url = URL.createObjectURL(blob);
+            
+            link.setAttribute('href', url);
+            link.setAttribute('download', 'exported_data_' + new Date().getTime() + '.csv');
+            link.style.visibility = 'hidden';
+            
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
         }
     </script>
 </body>
