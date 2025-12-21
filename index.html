@@ -559,17 +559,20 @@
 
         .pagination .page-info {
             padding: 10px 20px;
-            color: var(--text-secondary
-        }
-
-        .pagination .page-info {
-            padding: 8px 16px;
-            color: var(--text-dark);
+            color: var(--text-secondary);
         }
 
         .chart-container {
             padding: 30px;
-            display: no900px;
+            display: none;
+        }
+
+        .chart-container.show {
+            display: block;
+        }
+
+        .chart {
+            max-width: 900px;
             margin: 0 auto;
             height: 450px;
             border: 1px solid var(--border-color);
@@ -613,21 +616,7 @@
             }
             th, td {
                 padding: 12px 16px;
-                font-size: 0.9em{
-                padding: 15px;
-            }
-            th, td {
-                padding: 8px;
                 font-size: 0.9em;
-            }
-            .controls, .toolb000 !important;
-                color: #fff !important;
-            }
-            tbody tr {
-                background: #fff !important;
-            }
-            td {
-                color: #000
             }
         }
 
@@ -647,8 +636,14 @@
                 padding: 0;
             }
             thead {
-                background: #333 !important;
-                color: white !important;
+                background: #000 !important;
+                color: #fff !important;
+            }
+            tbody tr {
+                background: #fff !important;
+            }
+            td {
+                color: #000;
             }
             tr {
                 page-break-inside: avoid;
