@@ -16,7 +16,7 @@ header('Content-Type: application/json');
 // header('Access-Control-Allow-Methods: GET');
 
 // Enable error reporting for debugging (disable in production)
-error_reporting(E_ALL);
+error_reporting(0);
 ini_set('display_errors', 0);
 
 try {
@@ -45,8 +45,8 @@ try {
     
     // Read all rows from CSV
     while (!feof($file)) {
-        // Read one line from CSV
-        $data = fgetcsv($file);
+        // Read one line from CSV (with escape parameter to avoid PHP 8.4 deprecation)
+        $data = fgetcsv($file, 0, ",", '"', "\\");
         
         // Skip empty rows (filter out rows with only empty values)
         if ($data && count(array_filter($data)) > 0) {
