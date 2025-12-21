@@ -1,0 +1,16 @@
+Company,Product,Category,Price,Stock,Rating,Last_Updated
+TechCorp,Laptop Pro 15,Electronics,1299.99,45,4.5,2025-01-15
+GlobalMart,Office Chair Deluxe,Furniture,349.99,120,4.2,2025-01-20
+SmartHome,WiFi Smart Bulb,Electronics,24.99,500,4.7,2025-01-18
+BookWorld,Python Programming Guide,Books,45.00,200,4.8,2025-01-10
+FitLife,Yoga Mat Premium,Sports,39.99,85,4.3,2025-01-12
+TechCorp,Wireless Mouse,Electronics,29.99,300,4.4,2025-01-16
+GlobalMart,Standing Desk,Furniture,599.99,30,4.6,2025-01-19
+SmartHome,Security Camera HD,Electronics,89.99,150,4.5,2025-01-17
+BookWorld,Data Science Handbook,Books,52.00,75,4.9,2025-01-11
+FitLife,Resistance Bands Set,Sports,19.99,250,4.1,2025-01-13
+TechCorp,Mechanical Keyboard,Electronics,149.99,95,4.7,2025-01-14
+GlobalMart,Ergonomic Footrest,Furniture,45.99,180,4.0,2025-01-21
+SmartHome,Smart Thermostat,Electronics,199.99,60,4.8,2025-01-15
+BookWorld,Machine Learning Basics,Books,38.50,110,4.6,2025-01-09
+FitLife,Dumbbells 20lb Pair,Sports,79.99,40,4.4,2025-01-14
