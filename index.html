@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<!-- I am considering making this an upload space for csv files then, then the read.php file would run a double operation instead. -->
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CSV Reader & Display v3.0</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
             --primary-start: #667eea;
@@ -602,42 +602,42 @@
 <body>
     <div class="container">
         <header>
-            <h1>📊 CSV Reader & Display v3.0</h1>
-            <p>Advanced CSV Data Manager</p>
-            <button class="theme-toggle" onclick="toggleTheme()" title="Toggle Dark Mode">🌓</button>
+            <h1><i class="fas fa-chart-bar"></i> CSV Reader & Display v3.0</h1>
+            <p>CSV Data Manager</p>
+            <button class="theme-toggle" onclick="toggleTheme()" title="Toggle Dark Mode"><i class="fas fa-moon"></i></button>
         </header>
 
         <div class="upload-container">
             <input type="file" id="fileUpload" accept=".csv" multiple onchange="handleFileUpload(event)">
-            <button onclick="document.getElementById('fileUpload').click()">📁 Upload CSV</button>
+            <button onclick="document.getElementById('fileUpload').click()"><i class="fas fa-folder-open"></i> Upload CSV</button>
             <div class="file-list" id="fileList"></div>
         </div>
 
         <div class="controls">
             <div class="search-container">
-                <input type="text" id="searchInput" placeholder="🔍 Search table data..." oninput="filterTable()">
+                <input type="text" id="searchInput" placeholder="Search table data..." oninput="filterTable()">
             </div>
             <div class="button-group">
                 <button id="loadBtn" onclick="loadData()">Load Default CSV</button>
-                <button class="success" id="exportBtn" onclick="exportToCSV()" style="display:none;">💾 Export CSV</button>
-                <button class="secondary" onclick="window.print()">🖨️ Print</button>
-                <button class="secondary" onclick="location.reload()">↻ Refresh</button>
+                <button class="success" id="exportBtn" onclick="exportToCSV()" style="display:none;"><i class="fas fa-download"></i> Export CSV</button>
+                <button class="secondary" onclick="window.print()"><i class="fas fa-print"></i> Print</button>
+                <button class="secondary" onclick="location.reload()"><i class="fas fa-sync"></i> Refresh</button>
             </div>
         </div>
 
         <div class="toolbar">
             <div class="undo-redo">
-                <button onclick="undo()" id="undoBtn" disabled title="Undo (Ctrl+Z)">↶ Undo</button>
-                <button onclick="redo()" id="redoBtn" disabled title="Redo (Ctrl+Y)">↷ Redo</button>
+                <button onclick="undo()" id="undoBtn" disabled title="Undo (Ctrl+Z)"><i class="fas fa-undo"></i> Undo</button>
+                <button onclick="redo()" id="redoBtn" disabled title="Redo (Ctrl+Y)"><i class="fas fa-redo"></i> Redo</button>
             </div>
-            <button onclick="addNewRow()">➕ Add Row</button>
-            <button class="danger" onclick="deleteSelectedRows()" id="deleteBtn" disabled>🗑️ Delete Selected</button>
+            <button onclick="addNewRow()"><i class="fas fa-plus"></i> Add Row</button>
+            <button class="danger" onclick="deleteSelectedRows()" id="deleteBtn" disabled><i class="fas fa-trash"></i> Delete Selected</button>
             <div class="column-toggle">
-                <button onclick="toggleColumnDropdown()">👁️ Columns</button>
+                <button onclick="toggleColumnDropdown()"><i class="fas fa-eye"></i> Columns</button>
                 <div class="column-dropdown" id="columnDropdown"></div>
             </div>
-            <button onclick="toggleAdvancedFilters()">🔍 Advanced Filters</button>
-            <button onclick="toggleChart()">📊 Chart View</button>
+            <button onclick="toggleAdvancedFilters()"><i class="fas fa-filter"></i> Advanced Filters</button>
+            <button onclick="toggleChart()"><i class="fas fa-chart-line"></i> Chart View</button>
             <select id="rowsPerPage" onchange="changeRowsPerPage()">
                 <option value="10">10 rows</option>
                 <option value="25">25 rows</option>
@@ -649,7 +649,7 @@
 
         <div class="advanced-filters" id="advancedFilters">
             <div id="filterRows"></div>
-            <button onclick="addFilterRow()">➕ Add Filter</button>
+            <button onclick="addFilterRow()"><i class="fas fa-plus"></i> Add Filter</button>
             <button class="secondary" onclick="clearFilters()">Clear All</button>
             <button class="success" onclick="applyAdvancedFilters()">Apply Filters</button>
         </div>
