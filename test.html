@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSV Reader - Test Suite</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1000px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        h1 {
+            color: #333;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 10px;
+        }
+        .test {
+            background: white;
+            padding: 20px;
+            margin: 15px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .test h3 {
+            margin-top: 0;
+            color: #667eea;
+        }
+        .status {
+            display: inline-block;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            margin-left: 10px;
+        }
+        .pass {
+            background: #d4edda;
+            color: #155724;
+        }
+        .fail {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        .pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+        button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 5px;
+        }
+        button:hover {
+            background: #5568d3;
+        }
+        pre {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            border-left: 4px solid #667eea;
+        }
+        .results {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>🧪 CSV Reader & Display - Test Suite</h1>
+    
+    <button onclick="runAllTests()">Run All Tests</button>
+    <button onclick="location.href='index.html'">Open Main App</button>
+    
+    <div class="results" id="results"></div>
+
+    <script>
+        const tests = [
+            {
+                name: "File Structure Check",
+                description: "Verify all required files exist",
+                test: async () => {
+                    const files = ['index.html', 'read.php', 'data.csv'];
+                    const results = [];
+                    
+                    for (const file of files) {
+                        try {
+                            const response = await fetch(file, { method: 'HEAD' });
+                            results.push({ file, exists: response.ok });
+                        } catch (e) {
+                            results.push({ file, exists: false });
+                        }
+                    }
+                    
+                    const allExist = results.every(r => r.exists);
+                    return {
+                        pass: allExist,
+                        details: results.map(r => `${r.file}: ${r.exists ? '✓' : '✗'}`).join('\n')
+                    };
+                }
+            },
+            {
+                name: "PHP API Response",
+                description: "Test if read.php returns valid JSON",
+                test: async () => {
+                    try {
+                        const response = await fetch('read.php');
+                        const data = await response.json();
+                        
+                        const isArray = Array.isArray(data);
+                        const hasData = data.length > 0;
+                        const hasHeaders = hasData && Array.isArray(data[0]);
+                        
+                        return {
+                            pass: isArray && hasData && hasHeaders,
+                            details: `Array: ${isArray}\nHas data: ${hasData}\nHas headers: ${hasHeaders}\nRows: ${data.length}`
+                        };
+                    } catch (e) {
+                        return {
+                            pass: false,
+                            details: `Error: ${e.message}`
+                        };
+                    }
+                }
+            },
+            {
+                name: "CSV Data Validity",
+                description: "Check if CSV data is properly formatted",
+                test: async () => {
+                    try {
+                        const response = await fetch('read.php');
+                        const data = await response.json();
+                        
+                        if (data.length === 0) {
+                            return { pass: false, details: 'No data returned' };
+                        }
+                        
+                        const headers = data[0];
+                        const rows = data.slice(1);
+                        const headerCount = headers.length;
+                        
+                        const allRowsSameLength = rows.every(row => row.length === headerCount);
+                        
+                        return {
+                            pass: allRowsSameLength,
+                            details: `Headers: ${headerCount}\nRows: ${rows.length}\nConsistent columns: ${allRowsSameLength}`
+                        };
+                    } catch (e) {
+                        return {
+                            pass: false,
+                            details: `Error: ${e.message}`
+                        };
+                    }
+                }
+            },
+            {
+                name: "JavaScript Functions",
+                description: "Verify key JavaScript functions are defined",
+                test: async () => {
+                    const functions = ['loadData', 'displayData', 'sortTable', 'filterTable', 'exportToCSV'];
+                    const results = functions.map(fn => {
+                        return { fn, exists: typeof window[fn] === 'function' };
+                    });
+                    
+                    const allExist = results.every(r => r.exists);
+                    
+                    return {
+                        pass: allExist,
+                        details: results.map(r => `${r.fn}(): ${r.exists ? '✓' : '✗'}`).join('\n')
+                    };
+                }
+            },
+            {
+                name: "DOM Elements",
+                description: "Check if required HTML elements exist",
+                test: async () => {
+                    // Load index.html content
+                    const response = await fetch('index.html');
+                    const html = await response.text();
+                    
+                    const elements = ['loadBtn', 'searchInput', 'exportBtn', 'content'];
+                    const results = elements.map(id => {
+                        return { id, exists: html.includes(`id="${id}"`) };
+                    });
+                    
+                    const allExist = results.every(r => r.exists);
+                    
+                    return {
+                        pass: allExist,
+                        details: results.map(r => `#${r.id}: ${r.exists ? '✓' : '✗'}`).join('\n')
+                    };
+                }
+            },
+            {
+                name: "Responsive CSS",
+                description: "Verify mobile-responsive styles exist",
+                test: async () => {
+                    const response = await fetch('index.html');
+                    const html = await response.text();
+                    
+                    const hasMediaQuery = html.includes('@media');
+                    const hasMaxWidth = html.includes('max-width');
+                    const hasViewport = html.includes('viewport');
+                    
+                    const pass = hasMediaQuery && hasMaxWidth && hasViewport;
+                    
+                    return {
+                        pass,
+                        details: `Media queries: ${hasMediaQuery ? '✓' : '✗'}\nMax-width: ${hasMaxWidth ? '✓' : '✗'}\nViewport meta: ${hasViewport ? '✓' : '✗'}`
+                    };
+                }
+            },
+            {
+                name: "Error Handling",
+                description: "Test error handling in PHP",
+                test: async () => {
+                    // This would require a way to trigger an error
+                    // For now, just check if error handling code exists
+                    const response = await fetch('read.php');
+                    const text = await response.text();
+                    
+                    const hasTryCatch = text.includes('try') && text.includes('catch');
+                    const hasErrorHandling = text.includes('Exception');
+                    
+                    return {
+                        pass: hasTryCatch && hasErrorHandling,
+                        details: `Try-catch: ${hasTryCatch ? '✓' : '✗'}\nException handling: ${hasErrorHandling ? '✓' : '✗'}`
+                    };
+                }
+            },
+            {
+                name: "Documentation",
+                description: "Check if documentation files exist",
+                test: async () => {
+                    const docs = ['README.md', 'INSTALL.md', 'CONTRIBUTING.md', 'LICENSE'];
+                    const results = [];
+                    
+                    for (const doc of docs) {
+                        try {
+                            const response = await fetch(doc, { method: 'HEAD' });
+                            results.push({ doc, exists: response.ok });
+                        } catch (e) {
+                            results.push({ doc, exists: false });
+                        }
+                    }
+                    
+                    const allExist = results.every(r => r.exists);
+                    
+                    return {
+                        pass: allExist,
+                        details: results.map(r => `${r.doc}: ${r.exists ? '✓' : '✗'}`).join('\n')
+                    };
+                }
+            }
+        ];
+
+        async function runAllTests() {
+            const resultsDiv = document.getElementById('results');
+            resultsDiv.innerHTML = '<h2>Running Tests...</h2>';
+            
+            let passed = 0;
+            let failed = 0;
+            let html = '';
+            
+            for (const test of tests) {
+                html += `<div class="test">
+                    <h3>${test.name} <span class="status pending">RUNNING...</span></h3>
+                    <p>${test.description}</p>
+                    <pre>Testing...</pre>
+                </div>`;
+                resultsDiv.innerHTML = html;
+                
+                const result = await test.test();
+                
+                if (result.pass) {
+                    passed++;
+                } else {
+                    failed++;
+                }
+                
+                // Update the last test result
+                const lastTest = resultsDiv.lastElementChild;
+                lastTest.querySelector('.status').className = `status ${result.pass ? 'pass' : 'fail'}`;
+                lastTest.querySelector('.status').textContent = result.pass ? 'PASS' : 'FAIL';
+                lastTest.querySelector('pre').textContent = result.details;
+            }
+            
+            // Add summary
+            const summary = `
+                <div class="test" style="border: 3px solid ${failed === 0 ? '#28a745' : '#dc3545'};">
+                    <h2>Test Summary</h2>
+                    <p><strong>Total Tests:</strong> ${tests.length}</p>
+                    <p><strong>Passed:</strong> <span style="color: #28a745;">${passed}</span></p>
+                    <p><strong>Failed:</strong> <span style="color: #dc3545;">${failed}</span></p>
+                    <p><strong>Success Rate:</strong> ${((passed / tests.length) * 100).toFixed(1)}%</p>
+                </div>
+            `;
+            
+            resultsDiv.innerHTML = summary + html;
+        }
+    </script>
+</body>
+</html>
