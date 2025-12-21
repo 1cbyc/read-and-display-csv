@@ -4,68 +4,90 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CSV Reader - Test Suite</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         body {
-            font-family: Arial, sans-serif;
-            max-width: 1000px;
-            margin: 50px auto;
-            padding: 20px;
-            background: #f5f5f5;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 60px;
+            background: #000000;
+            color: #FFFFFF;
+            letter-spacing: -0.02em;
         }
         h1 {
-            color: #333;
-            border-bottom: 3px solid #667eea;
-            padding-bottom: 10px;
+            color: #FFFFFF;
+            border-bottom: 1px solid #2A2A2A;
+            padding-bottom: 20px;
+            font-weight: 600;
+            font-size: 2.2em;
+            letter-spacing: -0.03em;
+        }
+        h1 i {
+            color: #0077C8;
         }
         .test {
-            background: white;
-            padding: 20px;
-            margin: 15px 0;
-            border-radius: 8px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            background: #141414;
+            padding: 24px;
+            margin: 20px 0;
+            border-radius: 6px;
+            border: 1px solid #2A2A2A;
         }
         .test h3 {
             margin-top: 0;
-            color: #667eea;
+            color: #FFFFFF;
+            font-weight: 600;
+            letter-spacing: -0.02em;
         }
         .status {
             display: inline-block;
-            padding: 5px 15px;
-            border-radius: 20px;
-            font-weight: bold;
-            margin-left: 10px;
+            padding: 6px 16px;
+            border-radius: 6px;
+            font-weight: 500;
+            margin-left: 12px;
+            font-size: 0.85em;
+            letter-spacing: 0.5px;
         }
         .pass {
-            background: #d4edda;
-            color: #155724;
+            background: rgba(0, 176, 80, 0.15);
+            color: #00B050;
+            border: 1px solid #00B050;
         }
         .fail {
-            background: #f8d7da;
-            color: #721c24;
+            background: rgba(227, 25, 55, 0.15);
+            color: #E31937;
+            border: 1px solid #E31937;
         }
         .pending {
-            background: #fff3cd;
-            color: #856404;
+            background: rgba(0, 119, 200, 0.15);
+            color: #0077C8;
+            border: 1px solid #0077C8;
         }
         button {
-            background: #667eea;
-            color: white;
+            background: #0077C8;
+            color: #FFFFFF;
             border: none;
-            padding: 10px 20px;
-            border-radius: 5px;
+            padding: 12px 24px;
+            border-radius: 6px;
             cursor: pointer;
-            font-size: 16px;
-            margin: 5px;
+            font-size: 14px;
+            margin: 8px 8px 8px 0;
+            font-weight: 500;
+            letter-spacing: -0.01em;
+            transition: all 0.2s ease;
         }
         button:hover {
-            background: #5568d3;
+            background: #005A9C;
+            transform: translateY(-1px);
         }
         pre {
-            background: #f8f9fa;
-            padding: 15px;
-            border-radius: 5px;
+            background: #0A0A0A;
+            padding: 16px;
+            border-radius: 6px;
             overflow-x: auto;
-            border-left: 4px solid #667eea;
+            border-left: 2px solid #0077C8;
+            color: #A0A0A0;
+            font-size: 13px;
         }
         .results {
             margin-top: 20px;
@@ -73,7 +95,7 @@
     </style>
 </head>
 <body>
-    <h1>🧪 CSV Reader & Display - Test Suite</h1>
+    <h1><i class="fas fa-flask"></i> CSV Reader & Display - Test Suite</h1>
     
     <button onclick="runAllTests()">Run All Tests</button>
     <button onclick="location.href='index.html'">Open Main App</button>
@@ -293,11 +315,11 @@
             
             // Add summary
             const summary = `
-                <div class="test" style="border: 3px solid ${failed === 0 ? '#28a745' : '#dc3545'};">
+                <div class="test" style="border: 2px solid ${failed === 0 ? '#00B050' : '#E31937'};">
                     <h2>Test Summary</h2>
                     <p><strong>Total Tests:</strong> ${tests.length}</p>
-                    <p><strong>Passed:</strong> <span style="color: #28a745;">${passed}</span></p>
-                    <p><strong>Failed:</strong> <span style="color: #dc3545;">${failed}</span></p>
+                    <p><strong>Passed:</strong> <span style="color: #00B050;">${passed}</span></p>
+                    <p><strong>Failed:</strong> <span style="color: #E31937;">${failed}</span></p>
                     <p><strong>Success Rate:</strong> ${((passed / tests.length) * 100).toFixed(1)}%</p>
                 </div>
             `;
